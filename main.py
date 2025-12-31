@@ -2,6 +2,7 @@ from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout 
 from kivy.uix.boxlayout import BoxLayout 
 from kivy.uix.widget import Widget 
+from kivy.uix.label import Label 
 from kivy.graphics import Ellipse, Color
 
 import random 
@@ -29,11 +30,23 @@ letra=descobrir_letra(x)
 print(letra)
 
 class Bola(Widget):
-    def __init__(self,**kwargs):
+    def __init__(self,numero=[],**kwargs):
         super().__init__(**kwargs)
+        self.numero=self.descobrir_numero(numero)
+        self.numero_chamado=[0.1,0.1,0.4,1]
+        self.numero_nao_chamado=[0.1,0.1,0.1,1]
         with self.canvas:
-            Color(0.1,0.1,0.4,1)
+            Color(*self.numero_nao_chamado)
             Ellipse(pos=self.pos,size=self.size)
+        self.numero_label=Label(text=f'{self.numero}',pos=self.pos)
+        self.add_widget(self.numero_label)
+    
+    def descobrir_numero(self,numero):
+        if not numero:
+            return
+        coluna, linha=numero
+        numero=coluna*numeros_por_letra + linha + 1
+        return numero
 
 class Tabela(BoxLayout):
     def __init__(self,tamanho=15,**kwargs):
@@ -44,13 +57,13 @@ class Tabela(BoxLayout):
         for i in range(0,5):
             linha=BoxLayout(orientation='horizontal')
             for j in range(0,numeros_por_letra):
-                bola=Bola(pos= (self.x + self.width - i*1.2*size, self.y + self.height - j*1.2*size),size=(size,size))
+                bola=Bola(numero=(i,j),pos= (i*1.2*size, self.y + self.height - j*1.2*size),size=(size,size))
                 linha.add_widget(bola)
             self.add_widget(linha)
         
 
 class BingoApp(App):
     def build(self):
-        return Tabela(tamanho=15)
+        return Tabela(tamanho=18)
 
 BingoApp().run()
