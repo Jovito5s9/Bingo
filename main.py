@@ -6,9 +6,12 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button 
 from kivy.graphics import Ellipse, RoundedRectangle, Color
 from kivy.properties import BooleanProperty, ListProperty 
+from kivy.core.audio import SoundLoader
+from kivy.clock import Clock 
 
 import random 
 
+tambores = SoundLoader.load('sorteio.mp3')
 numero_maximo=75
 numeros_por_letra=int(numero_maximo/5)
 numeros_sorteados=[]
@@ -104,11 +107,17 @@ class Bingo(FloatLayout):
         super().__init__(**kwargs)
         self.tabela=Tabela(tamanho=15)
         self.add_widget(self.tabela)
+        
         self.sortear_button = ButtonCustomizado( size_hint=(0.15,0.15), pos_hint={'center_x': 0.825, 'center_y': 0.175})
-        self.sortear_button.bind(on_release = self.sortear_numero)
+        self.sortear_button.bind(on_release = self.sorteio)
         self.add_widget(self.sortear_button)
+        
         self.ultimo_numero_label = Label(text='  ultimo\n numero\nsorteado',font_size=80,size_hint=(0.15,0.15), pos_hint={'center_x': 0.825, 'center_y': 0.875})
         self.add_widget(self.ultimo_numero_label)
+    
+    def sorteio(self,*args):
+        tambores.play()
+        Clock.schedule_once(self.sortear_numero,3.8)
     
     def sortear_numero(self,*args):
         numero=sortear_numero()
