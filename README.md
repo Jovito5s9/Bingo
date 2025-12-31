@@ -11,5 +11,7 @@ a cada sorteio são rufados os tambores antes de aparecer o número, ao apertar 
 Minha familia queria jogar bingo hoje, então pensei: "se querem bingo, o bingo eu darei" e assim fiz esse aplicativo, testando a minha velocidade de desenvolvimento ao mesmo tempo em que entrego algo a miha familia. O app foi desenvolvido para que todos pudessem participar e se divertir.
 ---
 ## Tecnologias usadas
-* (python)[https://www.python.org/] - linguagem de programação usada para desenvolver as lógicas do bingo.
-* (kivy)[https://kivy.org/] - framework de interface gráfica usado.
+* [python](https://www.python.org/) - linguagem de programação usada para desenvolver as lógicas do bingo.
+* [kivy](https://kivy.org/) - framework de interface gráfica usado.
+---
+## [Download APK](https://github.com/Jovito5s9/Bingo/releases/download/v1.0/Bingo.apk)  <-- link de download do APK
