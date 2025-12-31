@@ -1,0 +1,4 @@
+BingoEnv/
+buildozer.spec
+bin/
+.buildozer/

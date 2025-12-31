@@ -11,7 +11,7 @@ from kivy.clock import Clock
 
 import random 
 
-tambores = SoundLoader.load('sorteio.mp3')
+tambores = SoundLoader.load('data/sorteio.mp3')
 numero_maximo=75
 numeros_por_letra=int(numero_maximo/5)
 numeros_disponiveis = list(range(1, numero_maximo + 1))
