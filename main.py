@@ -14,17 +14,22 @@ import random
 tambores = SoundLoader.load('sorteio.mp3')
 numero_maximo=75
 numeros_por_letra=int(numero_maximo/5)
-numeros_sorteados=[]
+numeros_disponiveis = list(range(1, numero_maximo + 1))
+numeros_sorteados = []
 
 def sortear_numero():
-    numero=random.randint(1,numero_maximo)
-    while numero in numeros_sorteados:
-        numero=random.randint(1,numero_maximo)
+    if not numeros_disponiveis:
+        return None 
+    numero = random.choice(numeros_disponiveis)
+    numeros_disponiveis.remove(numero)
     numeros_sorteados.append(numero)
     numeros_sorteados.sort()
+    
     return numero
 
 def descobrir_letra(numero):
+    if not numero:
+        return ""
     letras="BINGO"
     letra= int((numero-1) / numeros_por_letra)
     return letras[letra]
@@ -71,7 +76,10 @@ class Bola(Widget):
         self.bind(chamado=self.foi_chamado)
     
     def foi_chamado(self,*args):
-        self.cor.rgba=self.numero_chamado
+        if self.chamado:
+            self.cor.rgba=self.numero_chamado
+            return
+        self.cor.rgba=self.numero_nao_chamado
     
     def descobrir_numero(self,numero):
         if not numero:
@@ -96,9 +104,14 @@ class Tabela(BoxLayout):
             self.add_widget(linha)
         
     def numero_chamado(self,numero):
+        if not numero:
+            return
         bola=self.bolas[numero]
         bola.chamado=True
-        
+    
+    def resetar(self, *args):
+        for bola in self.bolas.values():
+            bola.chamado=False
         
 class Bingo(FloatLayout):
     def __init__(self,**kwargs):
@@ -113,6 +126,7 @@ class Bingo(FloatLayout):
         self.resetar_button=ButtonCustomizado(text='-',size_hint=(0.1,0.1), pos_hint={'center_x': 0.945, 'center_y': 0.945})
         self.resetar_button.cor=[1,0,0,0.2]
         self.resetar_button.cor2=[0.1,0.1,0.1,0.2]
+        self.resetar_button.bind(on_release=self.resetar)
         self.add_widget(self.resetar_button)
         
         self.ultimo_numero_label = Label(text='  ultimo\n numero\nsorteado',font_size=80,size_hint=(0.15,0.15), pos_hint={'center_x': 0.825, 'center_y': 0.82})
@@ -129,6 +143,17 @@ class Bingo(FloatLayout):
         numero=letra + " - " + str(numero)
         self.ultimo_numero_label.font_size=220
         self.ultimo_numero_label.text=numero
+    
+    def resetar(self, *args):
+        global numeros_sorteados, numeros_disponiveis
+        numeros_sorteados.clear() 
+        numeros_disponiveis = list(range(1, numero_maximo + 1))
+        
+        self.tabela.resetar()
+        self.ultimo_numero_label.text = '  ultimo\n numero\nsorteado'
+        self.ultimo_numero_label.font_size = 80
+
+        
 
 class BingoApp(App):
     def build(self):
