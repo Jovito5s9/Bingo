@@ -31,31 +31,29 @@ def descobrir_letra(numero):
 
 
 class ButtonCustomizado(Button):
-    cor=ListProperty([0.2,0.2,0.2,0.9])
-    cor2=ListProperty([0.1,0.1,0.6,0.9])
-    def __init__(self,**kwargs):
+    cor = ListProperty([0.2, 0.2, 0.2, 0.9])
+    cor2 = ListProperty([0.1, 0.1, 0.6, 0.9])
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.atualizar()
-        
-    def atualizar(self,*args):
-        self.background_color = (0,0,0,0)
-        self.bind(pos = self.update_canvas, size = self.update_canvas)
+        self.background_color = (0, 0, 0, 0)  
         with self.canvas.before:
-            Color(*self.cor)
-            self.rect = RoundedRectangle (pos = self.pos, size = self.size, radius=[20])
-    
-    def update_canvas(self,*args):
+            self.instrucao_cor = Color(*self.cor)
+            self.rect = RoundedRectangle(pos=self.pos, size=self.size, radius=[20])
+        
+        self.bind(pos=self.update_canvas, size=self.update_canvas)
+
+    def update_canvas(self, *args):
         self.rect.pos = self.pos
         self.rect.size = self.size
-    
-    def on_press(self,*args):
-        self.cor,self.cor2=self.cor2,self.cor
-    
-    def on_release(self,*args):
-        self.cor,self.cor2=self.cor2,self.cor
-    
-    def on_cor(self,*args):
-        self.atualizar()
+
+    def on_cor(self, instance, value):
+        self.instrucao_cor.rgba = value
+
+    def on_press(self, *args):
+        self.cor, self.cor2 = self.cor2, self.cor
+
+    def on_release(self, *args):
+        self.cor, self.cor2 = self.cor2, self.cor
 
 
 class Bola(Widget):
@@ -112,7 +110,12 @@ class Bingo(FloatLayout):
         self.sortear_button.bind(on_release = self.sorteio)
         self.add_widget(self.sortear_button)
         
-        self.ultimo_numero_label = Label(text='  ultimo\n numero\nsorteado',font_size=80,size_hint=(0.15,0.15), pos_hint={'center_x': 0.825, 'center_y': 0.875})
+        self.resetar_button=ButtonCustomizado(text='-',size_hint=(0.1,0.1), pos_hint={'center_x': 0.945, 'center_y': 0.945})
+        self.resetar_button.cor=[1,0,0,0.2]
+        self.resetar_button.cor2=[0.1,0.1,0.1,0.2]
+        self.add_widget(self.resetar_button)
+        
+        self.ultimo_numero_label = Label(text='  ultimo\n numero\nsorteado',font_size=80,size_hint=(0.15,0.15), pos_hint={'center_x': 0.825, 'center_y': 0.82})
         self.add_widget(self.ultimo_numero_label)
     
     def sorteio(self,*args):
@@ -121,9 +124,11 @@ class Bingo(FloatLayout):
     
     def sortear_numero(self,*args):
         numero=sortear_numero()
+        letra=descobrir_letra(numero)
         self.tabela.numero_chamado(numero)
-        self.ultimo_numero_label.font_size=250
-        self.ultimo_numero_label.text=f'{numero}'
+        numero=letra + " - " + str(numero)
+        self.ultimo_numero_label.font_size=220
+        self.ultimo_numero_label.text=numero
 
 class BingoApp(App):
     def build(self):
